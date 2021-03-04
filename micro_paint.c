@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mini_paint.c                                       :+:      :+:    :+:   */
+/*   micro_paint.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jvaquer <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -35,7 +35,8 @@ char	**ft_fill_circle(char **tab, FILE *fd)
 {
 	float	y;
 	float	x;
-	float	rad;
+	float	width;
+	float	height;
 	char	type;
 	char	c;
 	int		ret;
@@ -46,12 +47,12 @@ char	**ft_fill_circle(char **tab, FILE *fd)
 	c = 0;
 	while (ret != -1)
 	{
-		ret = fscanf(fd, "%c %f %f %f %c\n", &type, &x, &y, &rad, &c);
+		ret = fscanf(fd, "%c %f %f %f %f %c\n", &type, &x, &y, &width, &height, &c);
 		if (ret == -1)
 			break ;
-		if (rad <= 0 || !c)
+		if (width <= 0.0 || height <= 0.0)
 			return NULL;
-		if (type != 'c' && type != 'C')
+		if (type != 'r' && type != 'R')
 			return NULL;
 		i = 0;
 		while (tab[i])
@@ -59,19 +60,21 @@ char	**ft_fill_circle(char **tab, FILE *fd)
 			j = 0;
 			while (tab[i][j])
 			{
-				float res;
-				res = sqrt((y - i) * (y - i) + (x - j) * (x - j));
-				if (type == 'C')
+				if (type == 'R')
 				{
-					if (res <= rad)
+					if (j >= x && j <= x + width &&
+						i >= y && i <= y + height)
 						tab[i][j] = c;
 				}
-				else if (type == 'c')
+				else if (type == 'r')
 				{
-					if (res - rad < 0 && res -rad > -1)
+					if (j - x < 1.0 || (x + width) - j  < 1.0 ||
+						i - y < 1.0 || (y + height) - i < 1.0)
+						if (j >= x && j <= x + width &&
+							i >= y && i <= y + height)
 						tab[i][j] = c;
 				}
-				j++;
+					j++;
 			}
 			i++;
 		}
